@@ -15,9 +15,6 @@ jobs:
       # final production image and push it to GHCR.
       production_build: ${{ github.event_name != 'pull_request' &&
         github.ref == 'refs/heads/main' }}
-      # `github.repository_owner` can be uppercase, which will not work for GHCR replacement.
-      # Taken from: https://github.community/t/additional-function-s-lowercase-uppercase/140632
-      owner: ${${{ github.repository_owner }},,}
 
     steps:
       # Create a short SHA-tag to tag built images
@@ -26,6 +23,11 @@ jobs:
         run: |
           tag=$(cut -c 1-7 <<< $GITHUB_SHA)
           echo "::set-output name=tag::$tag"
+
+      # `github.repository_owner` can be uppercase, which will not work for GHCR replacement.
+      # Taken from: https://github.community/t/additional-function-s-lowercase-uppercase/140632
+      - name: Set Up Repository Owner
+        run: export owner=${{ github.repository_owner }} && echo "OWNER=${owner,,}" >> ${GITHUB_ENV}
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -79,10 +81,10 @@ jobs:
           build-args: DEV=1
           cache-from: |
             type=local,src=/tmp/.buildx-cache
-            ghcr.io/${{ env.owner }}/snekbox-base:latest
-            ghcr.io/${{ env.owner }}/snekbox-venv:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-base:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-venv:latest
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          tags: ghcr.io/${{ env.owner }}/snekbox-venv:${{ steps.sha_tag.outputs.tag }}
+          tags: ghcr.io/${{ env.OWNER }}/snekbox-venv:${{ steps.sha_tag.outputs.tag }}
 
       - name: Start Container
         run: |
@@ -176,13 +178,13 @@ jobs:
           file: ./Dockerfile
           push: true
           cache-from: |
-            ghcr.io/${{ env.owner }}/snekbox-base:latest
-            ghcr.io/${{ env.owner }}/snekbox-venv:latest
-            ghcr.io/${{ env.owner }}/snekbox:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-base:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-venv:latest
+            ghcr.io/${{ env.OWNER }}/snekbox:latest
           cache-to: type=inline
           tags: |
-            ghcr.io/${{ env.owner }}/snekbox:latest
-            ghcr.io/${{ env.owner }}/snekbox:${{ steps.sha_tag.outputs.tag }}
+            ghcr.io/${{ env.OWNER }}/snekbox:latest
+            ghcr.io/${{ env.OWNER }}/snekbox:${{ steps.sha_tag.outputs.tag }}
           build-args: |
             git_sha=${{ github.sha }}
 
@@ -200,7 +202,7 @@ jobs:
         with:
           manifests: |
             deployment.yaml
-          images: 'ghcr.io/${{ env.owner }}/snekbox:${{ steps.sha_tag.outputs.tag }}'
+          images: 'ghcr.io/${{ env.OWNER }}/snekbox:${{ steps.sha_tag.outputs.tag }}'
           kubectl-version: 'latest'
           namespace: 'apps'
 
@@ -214,9 +216,9 @@ jobs:
           target: base
           push: true
           cache-from: |
-            ghcr.io/${{ env.owner }}/snekbox-base:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-base:latest
           cache-to: type=inline
-          tags: ghcr.io/${{ env.owner }}/snekbox-base:latest
+          tags: ghcr.io/${{ env.OWNER }}/snekbox-base:latest
 
       # Push the venv image to GHCR, with an inline cache manifest
       - name: Push venv image
@@ -228,7 +230,7 @@ jobs:
           target: venv
           push: true
           cache-from: |
-            ghcr.io/${{ env.owner }}/snekbox-base:latest
-            ghcr.io/${{ env.owner }}/snekbox-venv:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-base:latest
+            ghcr.io/${{ env.OWNER }}/snekbox-venv:latest
           cache-to: type=inline
-          tags: ghcr.io/${{ env.owner }}/snekbox-venv:latest
+          tags: ghcr.io/${{ env.OWNER }}/snekbox-venv:latest
