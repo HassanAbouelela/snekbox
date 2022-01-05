@@ -27,7 +27,7 @@ jobs:
       # `github.repository_owner` can be uppercase, which will not work for GHCR replacement.
       # Taken from: https://github.community/t/additional-function-s-lowercase-uppercase/140632
       - name: Set Up Repository Owner
-        run: echo "OWNER=${${{ github.repository_owner }},,}" >> ${GITHUB_ENV}
+        run: export owner=${{ github.repository_owner }} && echo "OWNER=${owner,,}" >> ${GITHUB_ENV}
 
       - name: Checkout code
         uses: actions/checkout@v2
