@@ -3,6 +3,17 @@
 [![Coverage Status][3]][4]
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+# Archival
+The code here builds the snekbox app with a custom-built python version to facilitate access
+to non-released python versions. At the time of archival, there isn't a need for that.
+If you'd like to use snekbox in a regular capacity, please check out the project upstream.
+
+This repository is archived until further notice. To prepare the repo for a new python version:
+1. Make sure the version is available on it's own branch on the cpython repo.
+2. Run the upgrade script: `python upgrade.py <branch name>`.
+3. Build the container.
+
+
 # snekbox
 
 Python sandbox runners for executing code in isolation aka snekbox.
