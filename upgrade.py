@@ -28,10 +28,14 @@ PIPFILE.write_text(new_content, encoding="utf-8")
 
 
 print("Upgrading Dockerfile")
-new_content = DOCKERFILE.read_text(encoding="utf-8").replace(f"--branch {old_version}", f"--branch {version}")
+new_content = DOCKERFILE.read_text(encoding="utf-8").replace(
+    f"--branch {old_version}", f"--branch {version}"
+)
 DOCKERFILE.write_text(new_content, encoding="utf-8")
 
 
 print("Upgrade snekbox.cfg")
-new_content = SNEKBOX_CFG.read_text(encoding="utf-8").replace(f"lib/python{old_version}", f"lib/python{version}")
+new_content = SNEKBOX_CFG.read_text(encoding="utf-8").replace(
+    f"lib/python{old_version}", f"lib/python{version}"
+)
 SNEKBOX_CFG.write_text(new_content, encoding="utf-8")
