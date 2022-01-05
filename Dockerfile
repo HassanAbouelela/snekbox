@@ -1,4 +1,7 @@
 FROM debian:buster-slim as builder
+
+WORKDIR /nsjail
+
 RUN apt-get -y update \
     && apt-get install -y \
         bison=2:3.3.* \
