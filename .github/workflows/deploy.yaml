@@ -22,6 +22,12 @@ jobs:
         with:
           name: ${{ inputs.artifact }}
 
+      - name: Set up Python
+        id: python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
       # Load the image to make use of common layers during the final build.
       - name: Load image from archive
         run: docker load -i ${{ inputs.artifact }}.tar
@@ -76,6 +82,29 @@ jobs:
         with:
           manifests: deployment.yaml
           images: 'ghcr.io/python-discord/snekbox:${{ inputs.version }}'
+
+      # Build a lightweight image with a singular python version
+      - name: Regenerate dockerfile
+        run: python scripts/python_version.py
+        env:
+          VERSIONS_CONFIG: config/versions-light.json
+
+      - name: Build & push slim image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: venv
+          build-args: DEV=1
+          cache-from: |
+            ghcr.io/python-discord/snekbox-base:latest
+            ghcr.io/python-discord/snekbox-venv:latest
+            ghcr.io/python-discord/snekbox:latest
+          cache-to: type=inline
+          tags: |
+            ghcr.io/python-discord/snekbox:latest-slim
+            ghcr.io/python-discord/snekbox::${{ inputs.version }}-slim
 
       # Push the base image to GHCR, with an inline cache manifest.
       - name: Push base image
