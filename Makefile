@@ -40,7 +40,7 @@ prepare-versions:
 
 .PHONY: build
 build: prepare-versions
-	docker build -t ghcr.io/python-discord/snekbox:latest .
+	docker build -t ghcr.io/hassanabouelela/snekbox:latest .
 
 .PHONY: devsh
 devsh:
