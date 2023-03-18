@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: snekbox
-          image: ghcr.io/python-discord/snekbox:latest
+          image: ghcr.io/hassanabouelela/snekbox:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8060

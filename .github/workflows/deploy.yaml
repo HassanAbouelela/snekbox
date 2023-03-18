@@ -51,13 +51,13 @@ jobs:
           file: ./Dockerfile
           push: true
           cache-from: |
-            ghcr.io/python-discord/snekbox-base:latest
-            ghcr.io/python-discord/snekbox-venv:latest
-            ghcr.io/python-discord/snekbox:latest
+            ghcr.io/hassanabouelela/snekbox-base:latest
+            ghcr.io/hassanabouelela/snekbox-venv:latest
+            ghcr.io/hassanabouelela/snekbox:latest
           cache-to: type=inline
           tags: |
-            ghcr.io/python-discord/snekbox:latest
-            ghcr.io/python-discord/snekbox:${{ inputs.version }}
+            ghcr.io/hassanabouelela/snekbox:latest
+            ghcr.io/hassanabouelela/snekbox:${{ inputs.version }}
 
       # Deploy to Kubernetes.
       - name: Install kubectl
@@ -75,7 +75,7 @@ jobs:
         uses: azure/k8s-deploy@v4
         with:
           manifests: deployment.yaml
-          images: 'ghcr.io/python-discord/snekbox:${{ inputs.version }}'
+          images: 'ghcr.io/hassanabouelela/snekbox:${{ inputs.version }}'
 
       # Push the base image to GHCR, with an inline cache manifest.
       - name: Push base image
@@ -85,11 +85,11 @@ jobs:
           file: ./Dockerfile
           target: base
           push: true
-          cache-from: ghcr.io/python-discord/snekbox-base:latest
+          cache-from: ghcr.io/hassanabouelela/snekbox-base:latest
           cache-to: type=inline
           tags: |
-            ghcr.io/python-discord/snekbox-base:latest
-            ghcr.io/python-discord/snekbox-base:${{ inputs.version }}
+            ghcr.io/hassanabouelela/snekbox-base:latest
+            ghcr.io/hassanabouelela/snekbox-base:${{ inputs.version }}
 
       # Push the venv image to GHCR, with an inline cache manifest.
       - name: Push venv image
@@ -100,9 +100,9 @@ jobs:
           target: venv
           push: true
           cache-from: |
-            ghcr.io/python-discord/snekbox-base:latest
-            ghcr.io/python-discord/snekbox-venv:latest
+            ghcr.io/hassanabouelela/snekbox-base:latest
+            ghcr.io/hassanabouelela/snekbox-venv:latest
           cache-to: type=inline
           tags: |
-            ghcr.io/python-discord/snekbox-venv:latest
-            ghcr.io/python-discord/snekbox-venv:${{ inputs.version }}
+            ghcr.io/hassanabouelela/snekbox-venv:latest
+            ghcr.io/hassanabouelela/snekbox-venv:${{ inputs.version }}
